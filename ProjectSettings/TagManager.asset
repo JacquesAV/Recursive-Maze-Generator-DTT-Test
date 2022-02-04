@@ -41,3 +41,12 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: Low Priority
+    uniqueID: 3483922879
+    locked: 0
+  - name: Medium Priority
+    uniqueID: 3970973621
+    locked: 0
+  - name: High Priority
+    uniqueID: 3115644679
+    locked: 0
