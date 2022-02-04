@@ -25,8 +25,11 @@ public abstract class MazeGenerator : MonoBehaviour
 
     //Variables which affect the visual generation of the maze
     [Header("Tiles generated per second")]
-    [Range(0.01f, 1)] public float wallGenerationSpeed = 0.05f;
-    [Range(0.01f, 1)] public float floorGenerationSpeed = 0.05f;
+    [Range(0, 0.25f)] public float wallGenerationSpeed = 0.01f;
+    [Range(0, 0.25f)] public float floorGenerationSpeed = 0.01f;
+
+    //Stores important pathway data for generation at the end
+    protected List<PathwayData> generatedPathways = new List<PathwayData>();
 
     // Start is called before the first frame update
     protected virtual void Start()
@@ -46,15 +49,24 @@ public abstract class MazeGenerator : MonoBehaviour
     {
         //Declare a 2d array grid map to make working with tile positions easier
         gridMap = new int[mazeWidth, mazeHeight];
-
-        //Start a courotine to create a delayed floor population effect
-        StartCoroutine(FloorGenerationCourotine());
     }
 
-    private IEnumerator FloorGenerationCourotine()
+    protected void FloorGenerationDelayed()
+    {
+        //Start a courotine to create a delayed floor population effect
+        StartCoroutine(GenerationCourotine("Floor", floorTileMap, floorGenerationSpeed));
+    }
+
+    protected void WallGenerationDelayed()
+    {
+        //Start a courotine to create a delayed wall population effect
+        StartCoroutine(GenerationCourotine("Wall", wallTileMap, wallGenerationSpeed));
+    }
+
+    private IEnumerator GenerationCourotine(string generatedType, Tilemap affectedTileMap, float generationSpeed)
     {
         //Debug the start of floor generation
-        Debug.Log("Generating floor tiles at timestamp: " + Time.time);
+        Debug.Log("Generating " + generatedType + " tiles at timestamp: " + Time.time);
 
         //Iterate over rows
         for (int row = 0; row < gridMap.GetLength(0); row++)
@@ -71,6 +83,6 @@ public abstract class MazeGenerator : MonoBehaviour
         }
 
         //Debug the completion of floor generation
-        Debug.Log("Finished generating floor tiles at timestamp : " + Time.time);
+        Debug.Log("Finished " + generatedType + " generating floor tiles at timestamp : " + Time.time);
     }
 }

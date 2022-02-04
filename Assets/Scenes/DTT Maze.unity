@@ -225,10 +225,10 @@ Tilemap:
   m_AnimatedTiles: {}
   m_TileAssetArray:
   - m_RefCount: 1
-    m_Data: {fileID: 11400000, guid: cd46c57fcb68ca844a2089b75ec51229, type: 2}
+    m_Data: {fileID: 11400000, guid: 30ecb0f5bbda4514f99d72d55ec53fc2, type: 2}
   m_TileSpriteArray:
   - m_RefCount: 1
-    m_Data: {fileID: 8030396703251130990, guid: 1ceabcdd190278f44ad70630e29d23fe, type: 3}
+    m_Data: {fileID: -2437479566168368041, guid: 1ceabcdd190278f44ad70630e29d23fe, type: 3}
   m_TileMatrixArray:
   - m_RefCount: 1
     m_Data:
@@ -438,7 +438,7 @@ MonoBehaviour:
   wallTile: {fileID: 11400000, guid: cd46c57fcb68ca844a2089b75ec51229, type: 2}
   floorTileMap: {fileID: 2037933635}
   floorTile: {fileID: 11400000, guid: 92a41198f97564245aef74860a6ee831, type: 2}
-  wallGenerationSpeed: 0.01
+  wallGenerationSpeed: 0.15
   floorGenerationSpeed: 0.01
 --- !u!4 &1727330543
 Transform:
@@ -523,8 +523,8 @@ TilemapRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: -1179322617
-  m_SortingLayer: 3
+  m_SortingLayerID: -811044417
+  m_SortingLayer: 1
   m_SortingOrder: 0
   m_ChunkSize: {x: 32, y: 32, z: 32}
   m_ChunkCullingBounds: {x: 0, y: 0, z: 0}
