@@ -75,10 +75,11 @@ public abstract class MazeGenerator : MonoBehaviour
             for (int column = 0; column < gridMap.GetLength(1); column++)
             {
                 //Paint the floor layer
-                floorTileMap.SetTile(new Vector3Int(row, column, 0), floorTile);
+                affectedTileMap.SetTile(new Vector3Int(row, column, 0), floorTile);
 
                 //Yield a wait for seconds function based on the floor generation speed
-                yield return new WaitForSeconds(floorGenerationSpeed);
+                //Courotines have a limitation where waiting for less than a millisecond is not possible, and so in order to allow for animation skipping a check for 0 is here
+                if (generationSpeed != 0.0f) yield return new WaitForSeconds(generationSpeed); 
             }
         }
 
