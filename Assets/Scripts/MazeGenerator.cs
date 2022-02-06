@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Data;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -12,8 +11,8 @@ public abstract class MazeGenerator : MonoBehaviour
 {
     //Defines the dimensions of the maze
     [Header("Maze Dimensions")]
-    [Range(10, 255)] public int mazeWidth = 10;
-    [Range(10, 255)] public int mazeHeight = 10;
+    [Range(5, 255)] public int mazeWidth = 10;
+    [Range(5, 255)] public int mazeHeight = 10;
     protected int[,] gridMap;
 
     //Defines the targetted tilemaps and their assosiated visuals

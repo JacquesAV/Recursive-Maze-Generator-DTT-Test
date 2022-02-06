@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 /// <summary>
@@ -39,11 +38,14 @@ public class RecursiveDivisionMazeGenerator : MazeGenerator
     //Based on inputted
     private void StartRecursiveChamberDivision(int startingWidth, int startingHeight, int originRow, int originColumn)
     {
+        //VerticalChamberSplit(startingWidth, startingHeight, originRow, originColumn);
+        //HorizontalChamberSplit(startingWidth, startingHeight, originRow, originColumn);
+
         //Prioritize splits across the width then height
         if (startingWidth > startingHeight)
         {
             //Check if vertically splittable
-            if (startingWidth > 3)
+            if (startingWidth > 4)
             {
                 VerticalChamberSplit(startingWidth, startingHeight, originRow, originColumn);
             }
@@ -51,7 +53,7 @@ public class RecursiveDivisionMazeGenerator : MazeGenerator
         else
         {
             //Check if horizontally splittable
-            if (startingHeight > 3)
+            if (startingHeight > 4)
             {
                 HorizontalChamberSplit(startingWidth, startingHeight, originRow, originColumn);
             }
@@ -61,69 +63,58 @@ public class RecursiveDivisionMazeGenerator : MazeGenerator
     //Splits the chamber in two based on the remaining width and height
     private void VerticalChamberSplit(int startingWidth, int startingHeight, int originRow, int originColumn)
     {
+        if (startingWidth <= 4) return;
+
         //Temporary variable to help track the available space in the chamber as it splits
         int remainingSpace = startingWidth;
 
-        //Random width within bounds that allow for minimum 2 rooms, calculated from path size and wall guaranteed padding
-        int randomWidth = Random.Range(2, remainingSpace - 2);
+        //Random width within bounds that allow for minimum 2 rooms
+        int randomWidth = Random.Range(3, remainingSpace - 1);
 
-        //Check if still splittable, otherwise add the pathway
-        if (IsChamberSplittable(randomWidth + 1, startingHeight))
-        {
-            //Room 1
-            generatedPathways.Add(new PathwayData(
-                new Vector2Int(startingWidth - remainingSpace + originRow, originColumn), //Position
-                randomWidth + 1, startingHeight)); //Dimensions
+        //Room 1
+        generatedPathways.Add(new PathwayData(
+            new Vector2Int(startingWidth - remainingSpace + originRow, originColumn), //Position
+            randomWidth, startingHeight)); //Dimensions
 
-            //Calls loop again for first room division
-            StartRecursiveChamberDivision(randomWidth + 1, startingHeight, startingWidth - remainingSpace + originRow, originColumn);
-        }
+        //Calls loop again for first room division
+        StartRecursiveChamberDivision(randomWidth, startingHeight, startingWidth - remainingSpace + originRow, originColumn);
 
-        //Check if still splittable, else create the room
-        if (IsChamberSplittable(startingWidth - randomWidth + 1, startingHeight))
-        {
-            //Room 2
-            generatedPathways.Add(new PathwayData(
-                new Vector2Int(originRow + randomWidth, originColumn), //Position
-                startingWidth - randomWidth, startingHeight)); //Dimensions
+        //Room 2
+        generatedPathways.Add(new PathwayData(
+            new Vector2Int(originRow + randomWidth - 1, originColumn), //Position
+            startingWidth - randomWidth + 1, startingHeight)); //Dimensions
 
-            //Calls loop again for second room division
-            StartRecursiveChamberDivision(startingWidth - randomWidth, startingHeight, randomWidth + originRow, originColumn);
-        }
+        //Calls loop again for second room division
+        StartRecursiveChamberDivision(startingWidth - randomWidth + 1, startingHeight, randomWidth + originRow - 1, originColumn);
+
     }
 
     //Splits the chamber in two based on the remaining width and height
     private void HorizontalChamberSplit(int startingWidth, int startingHeight, int originRow, int originColumn)
     {
+        if (startingHeight <= 4) return;
+
         //Temporary variable to help track the available space in the chamber as it splits
         int remainingSpace = startingHeight;
 
         //Random height within bounds that allow for minimum 2 rooms, calculated from path size and wall guaranteed padding
-        int randomHeight = Random.Range(2, remainingSpace - 2);
+        int randomHeight = Random.Range(3, remainingSpace - 1);
 
-        //Check if still splittable, else create the room
-        if (IsChamberSplittable(startingWidth, randomHeight + 1))
-        {
-            //Room 1
-            generatedPathways.Add(new PathwayData(
-                new Vector2Int(originRow, startingHeight - remainingSpace - originColumn), //Position
-                startingWidth, randomHeight + 1)); //Dimensions
+        //Room 1
+        generatedPathways.Add(new PathwayData(
+            new Vector2Int(originRow, startingHeight - remainingSpace + originColumn), //Position //Original issues with splitting isolated to here, ABS is used to correct it to never be negative
+            startingWidth, randomHeight )); //Dimensions
 
-            //Calls loop again for first room division
-            StartRecursiveChamberDivision(startingWidth, randomHeight + 1, originRow, startingHeight - remainingSpace + originColumn);
-        }
+        //Calls loop again for first room division
+        StartRecursiveChamberDivision(startingWidth, randomHeight, originRow, startingHeight - remainingSpace + originColumn);
 
-        //Check if still splittable, else create the room
-        if (IsChamberSplittable(startingWidth, startingHeight - randomHeight + 1))
-        {
-            //Room 2
-            generatedPathways.Add(new PathwayData(
-                new Vector2Int(originRow, originColumn + randomHeight), //Position
-                startingWidth, startingHeight - randomHeight)); //Dimensions
+        //Room 2
+        generatedPathways.Add(new PathwayData(
+            new Vector2Int(originRow, originColumn + randomHeight - 1), //Position
+            startingWidth, startingHeight - randomHeight + 1)); //Dimensions
 
-            //Calls loop again for second room division
-            StartRecursiveChamberDivision(startingWidth, startingHeight - randomHeight, originRow, originColumn + randomHeight);
-        }
+        //Calls loop again for second room division
+        StartRecursiveChamberDivision(startingWidth, startingHeight - randomHeight + 1, originRow, originColumn + randomHeight - 1);
     }
 
     protected IEnumerator WallGenerationCourotine()
@@ -132,11 +123,14 @@ public class RecursiveDivisionMazeGenerator : MazeGenerator
         Debug.Log("Generating wall tiles at timestamp: " + Time.time);
 
         //Temporary list that will be filtered for duplicate coordinates
-        List<Vector3Int> filteredWalls = new List<Vector3Int>();
+        Dictionary<Vector3Int, Color> filteredWalls = new Dictionary<Vector3Int, Color>();
 
         //Get each position point for the pathway
         foreach (PathwayData pathway in generatedPathways)
         {
+            //Color for the current path being worked on
+            Color segmentColor = Random.ColorHSV();
+
             //Iterate over rows
             for (int row = 0; row < pathway.pathWidth; row++)
             {
@@ -146,21 +140,32 @@ public class RecursiveDivisionMazeGenerator : MazeGenerator
                     //Paint only the walls (perimeter of this "rectangle" row/column check)
                     if (row == 0 || row == pathway.pathWidth - 1 || column == 0 || column == pathway.pathHeight - 1)
                     {
-                        //Add to the temporary list the position of the wall
-                        filteredWalls.Add(new Vector3Int(row + pathway.tileOrigin.x, column + pathway.tileOrigin.y, 0));
+                        Vector3Int position = new Vector3Int(row + pathway.tileOrigin.x, column + pathway.tileOrigin.y, 0);
+                        if (!filteredWalls.ContainsKey(position))
+                        {
+                            //Add to the temporary list the position of the wall with a random color
+                            filteredWalls.Add(position, segmentColor);
+                        }
+                        else
+                        {
+                            filteredWalls[position] = segmentColor;
+                        }
                     }
                 }
             }
         }
 
         //Remove all duplicate/overlapping walls to improve generation time
-        filteredWalls = filteredWalls.Distinct().ToList();
+        //filteredWalls = filteredWalls.Distinct().ToList();
 
         //Iterate over the filtered list
-        foreach (Vector3Int wall in filteredWalls)
+        // foreach (Vector3Int wall in filteredWalls)
+        foreach (KeyValuePair<Vector3Int, Color> wall in filteredWalls)
         {
+            wallTile.color = wall.Value;
+
             //Paint each wall tile
-            wallTileMap.SetTile(wall, wallTile);
+            wallTileMap.SetTile(wall.Key, wallTile);
 
             //Yield a wait for seconds function based on the wall generation speed
             //Courotines have a limitation where waiting for less than a millisecond is not possible, and so in order to allow for animation skipping a check for 0 is here

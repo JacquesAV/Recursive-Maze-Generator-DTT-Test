@@ -666,12 +666,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mazeWidth: 15
-  mazeHeight: 10
+  mazeHeight: 15
   wallTileMap: {fileID: 15989680}
   wallTile: {fileID: 11400000, guid: cd46c57fcb68ca844a2089b75ec51229, type: 2}
   floorTileMap: {fileID: 2037933635}
   floorTile: {fileID: 11400000, guid: 92a41198f97564245aef74860a6ee831, type: 2}
-  wallGenerationSpeed: 0.005
+  wallGenerationSpeed: 0.01
   floorGenerationSpeed: 0.005
 --- !u!4 &1727330543
 Transform:
