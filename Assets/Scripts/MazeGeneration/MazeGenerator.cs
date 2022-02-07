@@ -14,8 +14,12 @@ public abstract class MazeGenerator : MonoBehaviour
 
     //Defines the dimensions of the maze
     [Header("Maze Dimensions")]
-    [Range(10, 255)] public int mazeWidth = 10;
+    [Range(10, 255)] public int mazeWidth = 10; 
     [Range(10, 255)] public int mazeHeight = 10;
+
+    [Tooltip("Minimum and maximum values for the dimensions")]
+    public Vector2Int dimensionLimits = new Vector2Int(10, 250); //This is specifically needed for the UI manager
+
     protected int[,] gridMap;
 
     //Defines the targetted tilemaps and their assosiated visuals
