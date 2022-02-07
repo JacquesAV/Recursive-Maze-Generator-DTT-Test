@@ -665,8 +665,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 933e788222b004c4c9ac7a7a88c5e72a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mazeWidth: 15
-  mazeHeight: 15
+  mazeWidth: 10
+  mazeHeight: 10
   wallTileMap: {fileID: 15989680}
   wallTile: {fileID: 11400000, guid: cd46c57fcb68ca844a2089b75ec51229, type: 2}
   floorTileMap: {fileID: 2037933635}

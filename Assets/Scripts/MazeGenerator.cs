@@ -9,10 +9,13 @@ using UnityEngine.Tilemaps;
 /// </summary>
 public abstract class MazeGenerator : MonoBehaviour
 {
+    //Bool for if the maze should debug visual information
+    public bool shouldDebugVisually = false;
+
     //Defines the dimensions of the maze
     [Header("Maze Dimensions")]
-    [Range(5, 255)] public int mazeWidth = 10;
-    [Range(5, 255)] public int mazeHeight = 10;
+    [Range(10, 255)] public int mazeWidth = 10;
+    [Range(10, 255)] public int mazeHeight = 10;
     protected int[,] gridMap;
 
     //Defines the targetted tilemaps and their assosiated visuals
@@ -26,6 +29,7 @@ public abstract class MazeGenerator : MonoBehaviour
     [Header("Tiles generated per second")]
     [Range(0, 0.25f)] public float wallGenerationSpeed = 0.01f;
     [Range(0, 0.25f)] public float floorGenerationSpeed = 0.01f;
+    [Range(0, 0.25f)] public float visualDebuggingGenerationSpeed = 0.01f;
 
     //Stores important pathway data for generation at the end
     protected List<PathwayData> generatedPathways = new List<PathwayData>();
@@ -38,9 +42,6 @@ public abstract class MazeGenerator : MonoBehaviour
         if (wallTile == null) throw new MissingReferenceException("Missing wall tile asset on " + gameObject.name + "!");
         if (wallTileMap == null) throw new MissingReferenceException("Missing floor tile map on " + gameObject.name + "!");
         if (wallTileMap == null) throw new MissingReferenceException("Missing tile tile on " + gameObject.name + "!");
-
-        //Initialize the maze base
-        InitializeMazeBase();
     }
 
     //Initializes the flooring and dimensions of the maze
