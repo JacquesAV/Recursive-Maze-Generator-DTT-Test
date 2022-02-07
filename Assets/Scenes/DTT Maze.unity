@@ -672,11 +672,10 @@ MonoBehaviour:
   wallTile: {fileID: 11400000, guid: cd46c57fcb68ca844a2089b75ec51229, type: 2}
   floorTileMap: {fileID: 2037933635}
   floorTile: {fileID: 11400000, guid: 92a41198f97564245aef74860a6ee831, type: 2}
-  wallGenerationSpeed: 0.01
+  wallGenerationSpeed: 0.001
   floorGenerationSpeed: 0
-  visualDebuggingGenerationSpeed: 0.1
+  visualDebuggingGenerationSpeed: 0.01
   cornerDebugColor: {r: 0.9628415, g: 1, b: 0, a: 1}
-  completedBaseInitialization: 0
   completedPathwayGeneration: 0
   completedCornerGeneration: 0
   completedConnectorGeneration: 0

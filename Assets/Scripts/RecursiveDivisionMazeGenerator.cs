@@ -310,14 +310,17 @@ public class RecursiveDivisionMazeGenerator : MazeGenerator
             yield return null;
         }
 
-        //Debug the start of floor generation
-        Debug.Log("Generating & verifying connector tiles at timestamp: " + Time.time);
+        //Verify all connector positions before generating them
+        VerifyAllConnectorPositions();
 
-        //Get each position point for the pathway
-        foreach (PathwayConnector door in generatedConnectors)
+        //Debug the start of connector generation
+        Debug.Log("Generating connector tiles at timestamp: " + Time.time);
+
+        //Get each position point for the pathway connector
+        foreach (PathwayConnector connector in generatedConnectors)
         {
-            //Paint each wall tile
-            wallTileMap.SetTile(door.connectorPosition, null);
+            //Paint each tile
+            wallTileMap.SetTile(connector.connectorPosition, null);
 
             //Yield a wait for seconds function based on the wall generation speed
             //Courotines have a limitation where waiting for less than a millisecond is not possible, and so in order to allow for animation skipping a check for 0 is here
@@ -327,8 +330,34 @@ public class RecursiveDivisionMazeGenerator : MazeGenerator
         //Mark generation as completed
         completedConnectorGeneration = true;
 
-        //Debug the completion of floor generation
-        Debug.Log("Finished generating & verifying connector tiles at timestamp : " + Time.time);
+        //Debug the completion of connector generation
+        Debug.Log("Finished generating connector tiles at timestamp : " + Time.time);
+    }
+
+    private void VerifyAllConnectorPositions()
+    {
+        //Debug the start of connector cerification
+        Debug.Log("Verifying connector tiles at timestamp: " + Time.time);
+
+        //Temporary variable to track how many connectors were verified
+        int modifiedConnectors = 0;
+
+        //Iterate over each connector and reposition if needed
+        foreach (PathwayConnector connector in generatedConnectors)
+        {
+            //Check if not valid
+            if (!IsConnectorValid(connector))
+            {
+                //Find a valid position and update the connector position
+                connector.UpdatePosition(GetNewPathwayConnectorPosition(connector));
+
+                //Add to the tracker of modified connectors
+                modifiedConnectors++;
+            }
+        }
+
+        //Debug the completion of connector verification
+        Debug.Log("Finished verifying " + generatedConnectors.Count + " and correcting " + modifiedConnectors + " connector tiles at timestamp : " + Time.time);
     }
 
     private IEnumerator MazeGenerationProgressTracker()
@@ -350,6 +379,70 @@ public class RecursiveDivisionMazeGenerator : MazeGenerator
 
         //Debug completion time
         Debug.Log("Completed Recursive Division Maze at timestamp: " + Time.time);
+    }
+
+    private bool IsConnectorValid(Vector3Int givenPosition)
+    {
+        //Check if contained within the
+        if (generatedCorners.Contains(givenPosition))
+        {
+            return false;
+        }
+        else
+        {
+            return true;
+        }
+    }
+
+    private bool IsConnectorValid(PathwayConnector givenConnector)
+    {
+        return IsConnectorValid(givenConnector.connectorPosition);
+    }
+
+    private Vector3Int GetNewPathwayConnectorPosition(PathwayConnector givenConnector)
+    {
+        //Get a list of potential alternative positions
+        List<Vector3Int> positionAlternatives = new List<Vector3Int>();
+
+        //Pupulate the list with all alternatives
+        for (int i = givenConnector.minimumPosition; i <= givenConnector.maximumPosition; i++)
+        {
+            //Check if should set vertical or horizontal position
+            if (givenConnector.isVerticalConnector)
+            {
+                //Add on the vertical axis
+                positionAlternatives.Add(new Vector3Int(givenConnector.connectorPosition.x, i, 0));
+            }
+            else
+            {
+                //Add on the horizontal axis
+                positionAlternatives.Add(new Vector3Int(i, givenConnector.connectorPosition.y, 0));
+            }
+        }
+
+        //Filter the list for valid alternatives
+        foreach(Vector3Int position in positionAlternatives.ToList())
+        {
+            //If within the corners list
+            if(generatedCorners.Contains(position))
+            {
+                //Remove the position
+                positionAlternatives.Remove(position);
+            }
+        }
+
+        //If positions were found
+        if(positionAlternatives.Count > 0)
+        {
+            //Return random alternative
+            return positionAlternatives[Random.Range(0, positionAlternatives.Count)];
+        }
+        else
+        {
+            //Otherwise return the original position with a warning
+            Debug.LogWarning("No door alternative was found for position " + givenConnector.connectorPosition + ", this should only happen if compared parameters were not correctly implemented!");
+            return givenConnector.connectorPosition;
+        }
     }
 
 }

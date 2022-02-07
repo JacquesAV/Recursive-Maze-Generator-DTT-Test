@@ -1,10 +1,11 @@
 using UnityEngine;
 
 /// <summary>
-/// Informational struct to help store data about pathway connectors generated
-/// Most of the data stored in this struct will be used for correcting the position in case of overlaps with walls
+/// Informational class to help store data about pathway connectors generated
+/// Most of the data stored in this class will be used for correcting the position in case of overlaps with walls
+/// Previously this would have been a struct, however in order to make it modifiable (and therefore correctable), a class is used
 /// </summary>
-public struct PathwayConnector
+public class PathwayConnector
 {
     //Used in position placement & correction
     public Vector3Int connectorPosition;
@@ -21,5 +22,10 @@ public struct PathwayConnector
         minimumPosition = givenMinimum;
         isVerticalConnector = isVertical;
         connectorPosition = givenLocation;
+    }
+
+    public void UpdatePosition(Vector3Int givenPosition)
+    {
+        connectorPosition = givenPosition;
     }
 }
