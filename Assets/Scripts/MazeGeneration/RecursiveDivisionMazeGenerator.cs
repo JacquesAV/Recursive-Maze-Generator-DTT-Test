@@ -11,6 +11,9 @@ using UnityEngine.Tilemaps;
 /// </summary>
 public class RecursiveDivisionMazeGenerator : MazeGenerator
 {
+    //Stores important pathway data for generation at the end
+    private List<PathwayData> generatedPathways = new List<PathwayData>();
+
     //Tracks the connectors between pathways that will be generated and corrected at the end
     private List<PathwayConnector> generatedConnectors = new List<PathwayConnector>();
 
@@ -36,7 +39,7 @@ public class RecursiveDivisionMazeGenerator : MazeGenerator
     }
 
     //Generate recursive maze using stored parameters
-    public void GenerateRecursiveDivisionMaze()
+    public override void GenerateMaze()
     {
         //Reject requests to generate while still busy
         if (isMazeCurrentlyGenerating)
@@ -214,7 +217,7 @@ public class RecursiveDivisionMazeGenerator : MazeGenerator
 
             //Yield a wait for seconds function based on the wall generation speed
             //Courotines have a limitation where waiting for less than a millisecond is not possible, and so in order to allow for animation skipping a check for 0 is here
-            if (wallGenerationSpeed != 0.0f) yield return new WaitForSecondsRealtime(wallGenerationSpeed);
+            if (wallGenerationSpeed != 0.0f && !shouldImmediatelyGenerate) yield return new WaitForSecondsRealtime(wallGenerationSpeed);
         }
 
         //Mark generation as completed
@@ -292,7 +295,7 @@ public class RecursiveDivisionMazeGenerator : MazeGenerator
 
             //Yield a wait for seconds function based on the wall generation speed
             //Courotines have a limitation where waiting for less than a millisecond is not possible, and so in order to allow for animation skipping a check for 0 is here
-            if (wallGenerationSpeed != 0.0f) yield return new WaitForSecondsRealtime(wallGenerationSpeed);
+            if (wallGenerationSpeed != 0.0f && !shouldImmediatelyGenerate) yield return new WaitForSecondsRealtime(wallGenerationSpeed);
         }
 
         //Mark generation as completed
@@ -324,7 +327,7 @@ public class RecursiveDivisionMazeGenerator : MazeGenerator
 
             //Yield a wait for seconds function based on the wall generation speed
             //Courotines have a limitation where waiting for less than a millisecond is not possible, and so in order to allow for animation skipping a check for 0 is here
-            if (wallGenerationSpeed != 0.0f) yield return new WaitForSecondsRealtime(wallGenerationSpeed);
+            if (wallGenerationSpeed != 0.0f && !shouldImmediatelyGenerate) yield return new WaitForSecondsRealtime(wallGenerationSpeed);
         }
 
         //Mark generation as completed
@@ -444,5 +447,4 @@ public class RecursiveDivisionMazeGenerator : MazeGenerator
             return givenConnector.connectorPosition;
         }
     }
-
 }

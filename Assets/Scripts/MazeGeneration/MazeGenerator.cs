@@ -12,14 +12,18 @@ public abstract class MazeGenerator : MonoBehaviour
     //Bool for if the maze should debug visual information
     public bool shouldDebugVisually = false;
 
+    //Bool for if the maze should immediately generate instead of playing the animation
+    public bool shouldImmediatelyGenerate = false;
+
     //Defines the dimensions of the maze
     [Header("Maze Dimensions")]
-    [Range(10, 255)] public int mazeWidth = 10; 
-    [Range(10, 255)] public int mazeHeight = 10;
+    [Range(10, 250)] public int mazeWidth = 10; 
+    [Range(10, 250)] public int mazeHeight = 10;
 
     [Tooltip("Minimum and maximum values for the dimensions")]
     public Vector2Int dimensionLimits = new Vector2Int(10, 250); //This is specifically needed for the UI manager
 
+    //Used for quick creation and tracking of maze dimensions
     protected int[,] gridMap;
 
     //Defines the targetted tilemaps and their assosiated visuals
@@ -35,9 +39,6 @@ public abstract class MazeGenerator : MonoBehaviour
     [Range(0, 0.25f)] public float floorGenerationSpeed = 0.01f;
     [Range(0, 0.25f)] public float visualDebuggingGenerationSpeed = 0.01f;
 
-    //Stores important pathway data for generation at the end
-    protected List<PathwayData> generatedPathways = new List<PathwayData>();
-
     // Start is called before the first frame update
     protected virtual void Start()
     {
@@ -47,6 +48,9 @@ public abstract class MazeGenerator : MonoBehaviour
         if (wallTileMap == null) throw new MissingReferenceException("Missing floor tile map on " + gameObject.name + "!");
         if (wallTileMap == null) throw new MissingReferenceException("Missing tile tile on " + gameObject.name + "!");
     }
+
+    //Generation method that should be modified across different maze types
+    public abstract void GenerateMaze();
 
     //Initializes the flooring and dimensions of the maze
     protected void InitializeMazeBase()
@@ -83,7 +87,7 @@ public abstract class MazeGenerator : MonoBehaviour
 
                 //Yield a wait for seconds function based on the floor generation speed
                 //Courotines have a limitation where waiting for less than a millisecond is not possible, and so in order to allow for animation skipping a check for 0 is here
-                if (generationSpeed != 0.0f) yield return new WaitForSeconds(generationSpeed); 
+                if (generationSpeed != 0.0f && !shouldImmediatelyGenerate) yield return new WaitForSeconds(generationSpeed); 
             }
         }
 
