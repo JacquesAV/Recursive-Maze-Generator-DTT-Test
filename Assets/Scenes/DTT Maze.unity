@@ -221,7 +221,7 @@ Tilemap:
       m_TileColorIndex: 0
       m_TileObjectToInstantiateIndex: 65535
       dummyAlignment: 0
-      m_AllTileFlags: 1073741825
+      m_AllTileFlags: 1073741824
   m_AnimatedTiles: {}
   m_TileAssetArray:
   - m_RefCount: 1
@@ -665,6 +665,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 933e788222b004c4c9ac7a7a88c5e72a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  shouldDebugVisually: 1
   mazeWidth: 10
   mazeHeight: 10
   wallTileMap: {fileID: 15989680}
@@ -672,7 +673,14 @@ MonoBehaviour:
   floorTileMap: {fileID: 2037933635}
   floorTile: {fileID: 11400000, guid: 92a41198f97564245aef74860a6ee831, type: 2}
   wallGenerationSpeed: 0.01
-  floorGenerationSpeed: 0.005
+  floorGenerationSpeed: 0
+  visualDebuggingGenerationSpeed: 0.1
+  cornerDebugColor: {r: 0.9628415, g: 1, b: 0, a: 1}
+  completedBaseInitialization: 0
+  completedPathwayGeneration: 0
+  completedCornerGeneration: 0
+  completedConnectorGeneration: 0
+  isMazeCurrentlyGenerating: 0
 --- !u!4 &1727330543
 Transform:
   m_ObjectHideFlags: 0

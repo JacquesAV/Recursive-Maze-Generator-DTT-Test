@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Tilemaps;
@@ -20,7 +21,6 @@ public class RecursiveDivisionMazeGenerator : MazeGenerator
     public Color cornerDebugColor = Color.white;
 
     //Internal booleans to help with tracking completed portions of generation
-    public bool completedBaseInitialization = false;
     public bool completedPathwayGeneration = false;
     public bool completedCornerGeneration = false;
     public bool completedConnectorGeneration = false;
@@ -33,11 +33,9 @@ public class RecursiveDivisionMazeGenerator : MazeGenerator
     {
         //Use the base maze generator start method
         base.Start();
-
-        //Generate recursive maze using stored parameters
-        //GenerateRecursiveDivisionMaze();
     }
 
+    //Generate recursive maze using stored parameters
     public void GenerateRecursiveDivisionMaze()
     {
         //Reject requests to generate while still busy
@@ -191,10 +189,10 @@ public class RecursiveDivisionMazeGenerator : MazeGenerator
         generatedPathways.Add(givenPathway);
 
         //Saves the corners of this pathway in order to make door position correction easier
-        //generatedCorners.Add(new Vector3Int(givenPathway.tileOrigin.x, givenPathway.tileOrigin.y + givenPathway.pathHeight - 1, 0)); //Top Left
-        //generatedCorners.Add(new Vector3Int(givenPathway.tileOrigin.x, givenPathway.tileOrigin.y, 0)); //Bottom Left
-        //generatedCorners.Add(new Vector3Int(givenPathway.tileOrigin.x + givenPathway.pathWidth, givenPathway.tileOrigin.y + givenPathway.pathHeight, 0)); //Top Right
-        //generatedCorners.Add(new Vector3Int(givenPathway.tileOrigin.x + givenPathway.pathWidth, givenPathway.tileOrigin.y, 0)); //Bottom Right
+        generatedCorners.Add(new Vector3Int(givenPathway.tileOrigin.x, givenPathway.tileOrigin.y + givenPathway.pathHeight - 1, 0)); //Top Left
+        generatedCorners.Add(new Vector3Int(givenPathway.tileOrigin.x, givenPathway.tileOrigin.y, 0)); //Bottom Left
+        generatedCorners.Add(new Vector3Int(givenPathway.tileOrigin.x + givenPathway.pathWidth - 1, givenPathway.tileOrigin.y + givenPathway.pathHeight - 1, 0)); //Top Right
+        generatedCorners.Add(new Vector3Int(givenPathway.tileOrigin.x + givenPathway.pathWidth - 1, givenPathway.tileOrigin.y, 0)); //Bottom Right
     }
 
     private IEnumerator WallGenerationCourotine()
@@ -203,7 +201,7 @@ public class RecursiveDivisionMazeGenerator : MazeGenerator
         Debug.Log("Generating wall tiles at timestamp: " + Time.time);
 
         //Temporary list that will be filtered for duplicate coordinates
-        Dictionary<Vector3Int, Color> filteredWalls = GetFilteredPathwaysColored(generatedPathways);
+        Dictionary<Vector3Int, Color> filteredWalls = GetFilteredColoredPathways(generatedPathways);
 
         //Iterate over the filtered list
         foreach (KeyValuePair<Vector3Int, Color> wall in filteredWalls)
@@ -226,7 +224,7 @@ public class RecursiveDivisionMazeGenerator : MazeGenerator
         Debug.Log("Finished generating wall tiles at timestamp : " + Time.time);
     }
 
-    private Dictionary<Vector3Int, Color> GetFilteredPathwaysColored(List<PathwayData> givenPathways)
+    private Dictionary<Vector3Int, Color> GetFilteredColoredPathways(List<PathwayData> givenPathways)
     {
         //Temporary list that will be filtered for duplicate coordinates
         Dictionary<Vector3Int, Color> filteredWalls = new Dictionary<Vector3Int, Color>();
@@ -279,6 +277,9 @@ public class RecursiveDivisionMazeGenerator : MazeGenerator
 
         //Debug the start of corner generation
         Debug.Log("Generating wall corners at timestamp: " + Time.time);
+
+        //Clear the corners list of duplicated to speed up generation
+        generatedCorners = generatedCorners.Distinct().ToList();
 
         //Iterate over the filtered list
         foreach (Vector3Int corner in generatedCorners)
