@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 /// <summary>
-/// Camera manager that helps snap to the current dimensions of the screen and 
+/// Camera manager that helps snap to the current dimensions of the screen and sets a zoom to fit the maze
 /// </summary>
 public class MazeCameraManager : MonoBehaviour
 {
@@ -19,8 +19,11 @@ public class MazeCameraManager : MonoBehaviour
     //The current maze generator that this manager should contact
     public MazeGenerator mazeGenerator = null;
 
+    //How much padding should exist around the maze when changing the camera size
+    [Range(0, 2)] public float cameraMazePadding = 2;
+
     // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
         //Subscribe to debugger togglers
         generateButton.onClick.AddListener(SnapMazeCamera);
@@ -36,6 +39,17 @@ public class MazeCameraManager : MonoBehaviour
 
         //Reset the camera to this static position to improve consistency when making new translations
         mazeCamera.transform.position = newCameraPosition;
+
+        //Set the zoom on the camera to be equal to half the width or height (whichever is greater) so that it fits on screen
+        //Padding is added
+        if (mazeGenerator.mazeWidth > mazeGenerator.mazeHeight)
+        {
+            mazeCamera.orthographicSize = (float)(mazeGenerator.mazeWidth + cameraMazePadding) / 2;
+        }
+        else
+        {
+            mazeCamera.orthographicSize = (float)(mazeGenerator.mazeHeight + cameraMazePadding) / 2;
+        }
 
         //Determine how much of the screen space is reserved for the UI and subtract 1 to adjust it for the maze
         float screenRatioUI =  1 - (canvasUI.rect.width - containerUI.rect.width) / canvasUI.rect.width;
