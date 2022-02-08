@@ -839,6 +839,7 @@ GameObject:
   - component: {fileID: 519420032}
   - component: {fileID: 519420031}
   - component: {fileID: 519420029}
+  - component: {fileID: 519420030}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -854,6 +855,23 @@ AudioListener:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 519420028}
   m_Enabled: 1
+--- !u!114 &519420030
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 519420028}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 175316d3e23e54e42a9a169c2e415f75, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mazeCamera: {fileID: 519420031}
+  containerUI: {fileID: 147323245}
+  canvasUI: {fileID: 978824333}
+  generateButton: {fileID: 348480803}
+  mazeGenerator: {fileID: 1727330542}
 --- !u!20 &519420031
 Camera:
   m_ObjectHideFlags: 0
@@ -1535,8 +1553,8 @@ Canvas:
   m_GameObject: {fileID: 978824329}
   m_Enabled: 1
   serializedVersion: 3
-  m_RenderMode: 0
-  m_Camera: {fileID: 0}
+  m_RenderMode: 1
+  m_Camera: {fileID: 519420031}
   m_PlaneDistance: 100
   m_PixelPerfect: 0
   m_ReceivesEvents: 1
@@ -1544,8 +1562,8 @@ Canvas:
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
   m_AdditionalShaderChannelsFlag: 25
-  m_SortingLayerID: 0
-  m_SortingOrder: 0
+  m_SortingLayerID: -1179322617
+  m_SortingOrder: 10
   m_TargetDisplay: 0
 --- !u!224 &978824333
 RectTransform:
@@ -2751,7 +2769,7 @@ MonoBehaviour:
   shouldDebugVisually: 1
   shouldImmediatelyGenerate: 0
   mazeWidth: 10
-  mazeHeight: 11
+  mazeHeight: 10
   dimensionLimits: {x: 10, y: 250}
   wallTileMap: {fileID: 15989680}
   wallTile: {fileID: 11400000, guid: cd46c57fcb68ca844a2089b75ec51229, type: 2}
