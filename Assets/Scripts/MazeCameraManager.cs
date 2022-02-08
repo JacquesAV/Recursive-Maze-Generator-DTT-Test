@@ -25,6 +25,14 @@ public class MazeCameraManager : MonoBehaviour
     // Start is called before the first frame update
     private void Start()
     {
+        //Error handling for if any UI elements were not added
+        //Normally this would be handled automatically through finding matching objects, however the scope of this project deemed it unnecessary
+        if (mazeCamera == null) throw new MissingReferenceException("Missing camera reference on " + gameObject.name + "!");
+        if (containerUI == null) throw new MissingReferenceException("Missing container UI reference on " + gameObject.name + "!");
+        if (canvasUI == null) throw new MissingReferenceException("Missing canvas UI reference on " + gameObject.name + "!");
+        if (generateButton == null) throw new MissingReferenceException("Missing generation button reference on " + gameObject.name + "!");
+        if (mazeGenerator == null) throw new MissingReferenceException("Missing maze generator reference on " + gameObject.name + "!");
+
         //Subscribe to debugger togglers
         generateButton.onClick.AddListener(SnapMazeCamera);
     }

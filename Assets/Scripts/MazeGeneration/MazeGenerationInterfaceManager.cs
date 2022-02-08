@@ -25,7 +25,21 @@ public class MazeGenerationInterfaceManager : MonoBehaviour
     public Toggle immediateGenerationToggle = null;
     public Toggle debugToggle = null;
 
-    public void OnEnable()
+    // Start is called before the first frame update
+    private void Start()
+    {
+        //Error handling for if any UI elements were not added
+        //Normally this would be handled automatically through finding matching objects, however the scope of this project deemed it unnecessary
+        if (widthSlider == null) throw new MissingReferenceException("Missing width slider reference on " + gameObject.name + "!");
+        if (heightSlider == null) throw new MissingReferenceException("Missing height slider reference on " + gameObject.name + "!");
+        if (widthText == null) throw new MissingReferenceException("Missing width track text reference on " + gameObject.name + "!");
+        if (heightText == null) throw new MissingReferenceException("Missing height track text reference on " + gameObject.name + "!");
+        if (generateButton == null) throw new MissingReferenceException("Missing generation button reference on " + gameObject.name + "!");
+        if (mazeGenerator == null) throw new MissingReferenceException("Missing maze generator reference on " + gameObject.name + "!");
+        if (immediateGenerationToggle == null) throw new MissingReferenceException("Missing immediate generation toggler reference on " + gameObject.name + "!");
+        if (debugToggle == null) throw new MissingReferenceException("Missing debug toggler reference on " + gameObject.name + "!");
+    }
+    private void OnEnable()
     {
         InitializeUI();
     }

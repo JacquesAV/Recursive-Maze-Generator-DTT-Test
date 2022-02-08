@@ -42,10 +42,10 @@ public abstract class MazeGenerator : MonoBehaviour
     protected virtual void Start()
     {
         //Error handling for if a tilemap or tile was not supplied
-        if (wallTileMap == null) throw new MissingReferenceException("Missing wall tile map on " + gameObject.name + "!");
-        if (wallTile == null) throw new MissingReferenceException("Missing wall tile asset on " + gameObject.name + "!");
-        if (wallTileMap == null) throw new MissingReferenceException("Missing floor tile map on " + gameObject.name + "!");
-        if (wallTileMap == null) throw new MissingReferenceException("Missing tile tile on " + gameObject.name + "!");
+        if (wallTileMap == null) throw new MissingReferenceException("Missing wall tile map reference on " + gameObject.name + "!");
+        if (wallTile == null) throw new MissingReferenceException("Missing wall tile asset reference on " + gameObject.name + "!");
+        if (wallTileMap == null) throw new MissingReferenceException("Missing floor tile map reference on " + gameObject.name + "!");
+        if (wallTileMap == null) throw new MissingReferenceException("Missing tile tile reference on " + gameObject.name + "!");
     }
 
     //Generation method that should be modified across different maze types
