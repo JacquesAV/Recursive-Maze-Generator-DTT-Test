@@ -1345,7 +1345,7 @@ GameObject:
   - component: {fileID: 876135906}
   - component: {fileID: 876135905}
   m_Layer: 0
-  m_Name: Grid
+  m_Name: Maze Grid
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1385,7 +1385,7 @@ RectTransform:
   - {fileID: 15989678}
   - {fileID: 2037933633}
   m_Father: {fileID: 0}
-  m_RootOrder: 1
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -1851,7 +1851,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1286852691
 GameObject:
@@ -2751,7 +2751,7 @@ MonoBehaviour:
   shouldDebugVisually: 1
   shouldImmediatelyGenerate: 0
   mazeWidth: 10
-  mazeHeight: 10
+  mazeHeight: 11
   dimensionLimits: {x: 10, y: 250}
   wallTileMap: {fileID: 15989680}
   wallTile: {fileID: 11400000, guid: cd46c57fcb68ca844a2089b75ec51229, type: 2}
@@ -2777,7 +2777,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1764506776
 GameObject:

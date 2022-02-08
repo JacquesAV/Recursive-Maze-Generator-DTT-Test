@@ -72,7 +72,7 @@ public class RecursiveDivisionMazeGenerator : MazeGenerator
         FloorGenerationDelayed();
 
         //Create two chambers based on starting parameters and continue until no space remains
-        StartRecursiveChamberDivision(mazeWidth, mazeHeight, 0, 0);
+        RunRecursiveChamberDivision(mazeWidth, mazeHeight, 0, 0, true);
 
         //Start a courotine to create a delayed wall population effect
         StartCoroutine(WallGenerationCourotine());
@@ -92,8 +92,9 @@ public class RecursiveDivisionMazeGenerator : MazeGenerator
         completedConnectorGeneration = false;
     }
 
-    //Based on inputted
-    private void StartRecursiveChamberDivision(int startingWidth, int startingHeight, int originRow, int originColumn)
+    #region Recursive Division Calculations
+    //Split chambers/pathways based on inputted values
+    private void RunRecursiveChamberDivision(int startingWidth, int startingHeight, int originRow, int originColumn, bool isFirstDivision)
     {
         //Prioritize splits across the width then height
         if (startingWidth > startingHeight)
@@ -101,7 +102,7 @@ public class RecursiveDivisionMazeGenerator : MazeGenerator
             //Check if vertically splittable
             if (startingWidth > 4)
             {
-                VerticalChamberSplit(startingWidth, startingHeight, originRow, originColumn);
+                VerticalChamberSplit(startingWidth, startingHeight, originRow, originColumn, isFirstDivision);
             }
         }
         else
@@ -109,13 +110,13 @@ public class RecursiveDivisionMazeGenerator : MazeGenerator
             //Check if horizontally splittable
             if (startingHeight > 4)
             {
-                HorizontalChamberSplit(startingWidth, startingHeight, originRow, originColumn);
+                HorizontalChamberSplit(startingWidth, startingHeight, originRow, originColumn, isFirstDivision);
             }
         }
     }
 
     //Splits the chamber in two based on the remaining width and height
-    private void VerticalChamberSplit(int startingWidth, int startingHeight, int originRow, int originColumn)
+    private void VerticalChamberSplit(int startingWidth, int startingHeight, int originRow, int originColumn, bool isFirstDivision)
     {
         //Temporary variable to help track the available space in the chamber as it splits
         int remainingSpace = startingWidth;
@@ -129,7 +130,7 @@ public class RecursiveDivisionMazeGenerator : MazeGenerator
             randomWidth, startingHeight)); //Dimensions
 
         //Calls loop again for first room division
-        StartRecursiveChamberDivision(randomWidth, startingHeight, startingWidth - remainingSpace + originRow, originColumn);
+        RunRecursiveChamberDivision(randomWidth, startingHeight, startingWidth - remainingSpace + originRow, originColumn, false);
 
         //Room 2
         SavePathwayData(new PathwayData(
@@ -137,7 +138,7 @@ public class RecursiveDivisionMazeGenerator : MazeGenerator
             startingWidth - randomWidth + 1, startingHeight)); //Dimensions
 
         //Calls loop again for second room division
-        StartRecursiveChamberDivision(startingWidth - randomWidth + 1, startingHeight, randomWidth + originRow - 1, originColumn);
+        RunRecursiveChamberDivision(startingWidth - randomWidth + 1, startingHeight, randomWidth + originRow - 1, originColumn, false);
 
         //Pathway connector bounds setup
         int maximumConnectorPosition = originColumn + startingHeight - 2;
@@ -146,12 +147,28 @@ public class RecursiveDivisionMazeGenerator : MazeGenerator
         //Random position, subject to change based on room overlaps
         Vector3Int connectorPosition = new Vector3Int(originRow + randomWidth - 1, Random.Range(minimumConnectorPosition, maximumConnectorPosition), 0);
 
-        //Add the door to the list for generation later
+        //Add the connector to the list for generation later
         generatedConnectors.Add(new PathwayConnector(connectorPosition, maximumConnectorPosition, minimumConnectorPosition, true));
+
+        //If these are the first two divided chambers, add two entrances to the maze
+        if (isFirstDivision)
+        {
+            //Leftward entrance
+            connectorPosition = new Vector3Int(originRow, Random.Range(minimumConnectorPosition, maximumConnectorPosition), 0);
+
+            //Add the connector to the list for generation later
+            generatedConnectors.Add(new PathwayConnector(connectorPosition, maximumConnectorPosition, minimumConnectorPosition, true));
+
+            //Upward entrance
+            connectorPosition = new Vector3Int(originRow + startingWidth - 1, Random.Range(minimumConnectorPosition, maximumConnectorPosition), 0);
+
+            //Add the connector to the list for generation later
+            generatedConnectors.Add(new PathwayConnector(connectorPosition, maximumConnectorPosition, minimumConnectorPosition, true));
+        }
     }
 
     //Splits the chamber in two based on the remaining width and height
-    private void HorizontalChamberSplit(int startingWidth, int startingHeight, int originRow, int originColumn)
+    private void HorizontalChamberSplit(int startingWidth, int startingHeight, int originRow, int originColumn, bool isFirstDivision)
     {
         //Temporary variable to help track the available space in the chamber as it splits
         int remainingSpace = startingHeight;
@@ -165,7 +182,7 @@ public class RecursiveDivisionMazeGenerator : MazeGenerator
             startingWidth, randomHeight )); //Dimensions
 
         //Calls loop again for first room division
-        StartRecursiveChamberDivision(startingWidth, randomHeight, originRow, startingHeight - remainingSpace + originColumn);
+        RunRecursiveChamberDivision(startingWidth, randomHeight, originRow, startingHeight - remainingSpace + originColumn, false);
 
         //Room 2
         SavePathwayData(new PathwayData(
@@ -173,7 +190,7 @@ public class RecursiveDivisionMazeGenerator : MazeGenerator
             startingWidth, startingHeight - randomHeight + 1)); //Dimensions
 
         //Calls loop again for second room division
-        StartRecursiveChamberDivision(startingWidth, startingHeight - randomHeight + 1, originRow, originColumn + randomHeight - 1);
+        RunRecursiveChamberDivision(startingWidth, startingHeight - randomHeight + 1, originRow, originColumn + randomHeight - 1, false);
 
         //Pathway connector bounds setup
         int maximumConnectorPosition = originRow + startingWidth - 2;
@@ -182,9 +199,26 @@ public class RecursiveDivisionMazeGenerator : MazeGenerator
         //Random position, subject to change based on room overlaps
         Vector3Int connectorPosition = new Vector3Int(Random.Range(minimumConnectorPosition, maximumConnectorPosition), originColumn + randomHeight - 1, 0);
 
-        //Add the door to the list for generation later
+        //Add the connector to the list for generation later
         generatedConnectors.Add(new PathwayConnector(connectorPosition, maximumConnectorPosition, minimumConnectorPosition, false));
+
+        //If these are the first two divided chambers, add two entrances to the maze
+        if (isFirstDivision)
+        {
+            //Leftward entrance
+            connectorPosition = new Vector3Int(Random.Range(minimumConnectorPosition, maximumConnectorPosition), originColumn, 0);
+
+            //Add the connector to the list for generation later
+            generatedConnectors.Add(new PathwayConnector(connectorPosition, maximumConnectorPosition, minimumConnectorPosition, false));
+
+            //Upward entrance
+            connectorPosition = new Vector3Int(Random.Range(minimumConnectorPosition, maximumConnectorPosition), originColumn + startingHeight - 1, 0);
+
+            //Add the connector to the list for generation later
+            generatedConnectors.Add(new PathwayConnector(connectorPosition, maximumConnectorPosition, minimumConnectorPosition, false));
+        }
     }
+    #endregion
 
     private void SavePathwayData(PathwayData givenPathway)
     {
@@ -352,7 +386,7 @@ public class RecursiveDivisionMazeGenerator : MazeGenerator
             if (!IsConnectorValid(connector))
             {
                 //Find a valid position and update the connector position
-                connector.UpdatePosition(GetNewPathwayConnectorPosition(connector));
+                connector.UpdatePosition(GetNewValidConnectorPosition(connector));
 
                 //Add to the tracker of modified connectors
                 modifiedConnectors++;
@@ -402,7 +436,7 @@ public class RecursiveDivisionMazeGenerator : MazeGenerator
         return IsConnectorValid(givenConnector.connectorPosition);
     }
 
-    private Vector3Int GetNewPathwayConnectorPosition(PathwayConnector givenConnector)
+    private Vector3Int GetNewValidConnectorPosition(PathwayConnector givenConnector)
     {
         //Get a list of potential alternative positions
         List<Vector3Int> positionAlternatives = new List<Vector3Int>();
